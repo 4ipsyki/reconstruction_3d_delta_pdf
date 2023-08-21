@@ -9,6 +9,7 @@ addpath([base_dirr,'processed/reconstructions/ybco_oleh/scripts/find_ub_matrix/'
 load([pars_dirr,name_ip,'.mat']);
 
 clear mask; load([save_dirr,'masks_700.mat']);
+% clear mask; mask=imread([base_dirr,'mask_pil2M.tif']);
 
 [xx,yy]=meshgrid(1:y_size,1:x_size);
 
@@ -25,7 +26,14 @@ for nr=1:nr_scans
     % suming all framnes to find "empty" regions
     img=zeros(x_size,y_size);
     parfor ii=1:nr_frames
-        img=img+double(get_pe_new5(dirr{nr}, file{nr}, ii));
+        if data_type==1
+            img = img+single(get_pe_new5(dirr{nr}, file{nr}, ii));
+        elseif data_type==2
+            img = img+permute(double(read_cbf([dirr{nr}, file{nr}, sprintf('%05d.cbf',ii)]).data),[2 1]);
+        else
+            disp("Data type not specified properly.")
+            break
+        end
     end
     imgtot=img;
     mask0=mask{nr};

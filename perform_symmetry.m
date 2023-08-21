@@ -16,8 +16,10 @@ idx_sym = [ 1  2  3; -1 -2  3; -1  2 -3; 1 -2 -3;...
 
 for idxfile=1:size(myfiles,1)
     loadnm=myfiles{idxfile};
-    % load([save_dirr,loadnm],'Int_total_t','idx_paf','hmin','hmax','kmin','kmax','lmin','lmax','ub'); 
-    load([save_dirr,loadnm],'Int_total_t','hmin','hmax','kmin','kmax','lmin','lmax','ub');
+    % load([save_dirr,loadnm],'Int_total','z_total','idx_paf','hmin','hmax','kmin','kmax','lmin','lmax','ub'); 
+% Int_total_t=Int_total./z_total; Int_total_t(isnan(Int_total_t))=0; Int_total_t(idx_paf)=0;
+    load([save_dirr,loadnm],'Int_total','z_total','hmin','hmax','kmin','kmax','lmin','lmax','ub');
+Int_total_t=Int_total./z_total; Int_total_t(isnan(Int_total_t))=0;
 
     data1=Int_total_t; data1(isnan(data1))=0; clear Int_total_t
     n_steps=size(data1);
@@ -26,14 +28,16 @@ for idxfile=1:size(myfiles,1)
     ql=linspace(lmin,lmax,n_steps(3));
     
     % applying symmetries
-    data2=apply_symmetry(data1,idx_sym);
+    Int_total(isnan(Int_total))=0; data21=apply_symmetry(Int_total,idx_sym);
+    z_total(isnan(z_total))=0; data22=apply_symmetry(z_total,idx_sym);
+    data2=data21./data22; data2(isnan(data2))=0;
     
     % saving
-    Int_total_t=data2;
-    Int_total_t(isnan(Int_total_t))=0;
+    Int_total=data21;
+    z_total=data22;
     save_name=[loadnm(1:end-4),'_sym.mat'];
-    % save([save_dirr,save_name],'Int_total_t','idx_paf','idx_sym',...
-    save([save_dirr,save_name],'Int_total_t','idx_sym',...
+    % save([save_dirr,save_name],'Int_total','z_total','idx_paf','idx_sym',...
+    save([save_dirr,save_name],'Int_total','z_total','idx_sym',...
                     'hmin','hmax','kmin','kmax','lmin','lmax','ub','-v7.3')
 end
 %% plotting

@@ -43,15 +43,15 @@ idx = 1;
 for nr = scan_num
     for mypos = 1:4
         name = [main_name,sprintf('%d_%05d',[mypos,nr])];
-        dirr{idx} = [base_dirr,main_dirr,name,'/'];
-        file{idx} = [name,'_'];
+        dirr{idx,1} = [base_dirr,main_dirr,name,'/'];
+        file{idx,1} = [name,'_'];
         if angle_logs==1
             nm_attojanis = [base_dirr,main_dirr,'log/',name,'.dat'];
-            [rot_angle{idx},frame_nr{idx}] = read_log_attojanis_v2(nm_attojanis);
-            rot_angle{idx} = rot_angle{idx}*angle_conv;
+            [rot_angle{idx,1},frame_nr{idx,1}] = read_log_attojanis_v2(nm_attojanis);
+            rot_angle{idx,1} = rot_angle{idx,1}*angle_conv;
         else
-            rot_angle{idx} = (0:1:(tot_frames-1))*angle_step*angle_conv;
-            frame_nr{idx}  = 1:1:tot_frames;
+            rot_angle{idx,1} = (0:1:(tot_frames-1))*angle_step*angle_conv;
+            frame_nr{idx,1}  = 1:1:tot_frames;
         end
         idx = idx+1;
     end

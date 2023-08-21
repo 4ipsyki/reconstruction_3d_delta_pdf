@@ -13,6 +13,8 @@ myfiles={'orthoiii2_700_merged_v2_punched_box92_sg3_bragg0p27_0p6_0p6_filled_sg0
 idxfile=1;
 loadnm=myfiles{idxfile};
 load([save_dirr,loadnm],'Int_total_t','hmin','hmax','kmin','kmax','lmin','lmax','ub');
+% load([save_dirr,loadnm],'Int_total','z_total','hmin','hmax','kmin','kmax','lmin','lmax','ub');
+% Int_total_t=Int_total./z_total; Int_total_t(isnan(Int_total_t))=0;
 
 data1=Int_total_t; data1(isnan(data1))=0; clear Int_total_t
 n_steps=size(data1);

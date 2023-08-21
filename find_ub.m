@@ -16,8 +16,9 @@ nr=5;
     v_angle=vert_angle(nr);
     om_pos=rot_angle{nr};
     frames=frame_nr{nr};
-    clear mask; load([save_dirr,'masks_700.mat']);
-    mask=mask{nr};
+    % clear mask; load([save_dirr,'masks_700.mat']);
+    % mask=mask{nr};
+    clear mask; mask=imread([base_dirr,'mask_pil2M.tif']);
 
 %% loading peak-angle matrix or loading frames and finding peaks
 try
@@ -34,9 +35,25 @@ catch
         filenumber=frames((1:nsum)+nsum*(nb-1));
         parfor n=1:length(filenumber)
             display(filenumber(n));
-            img = single(get_pe_new5(dirrname, flname, filenumber(n)));
+            if data_type==1
+                img = single(get_pe_new5(dirrname, flname, filenumber(n)));
+            elseif data_type==2
+                img = permute(double(read_cbf([dirrname, flname, sprintf('%05d.cbf',filenumber(n))]).data),[2 1]);
+            else
+                disp("Data type not specified properly.")
+                break
+            end
             image_ary(:,:,n) = img;
         end
+        
+        if data_type==1
+        image = double(get_pe_new5(dirr, file, frame_nr(idx)));
+    elseif data_type==2
+        image = permute(double(read_cbf([dirr, file, sprintf('%05d.cbf',frame_nr(idx))]).data),[2 1]);
+    else
+        disp("Data type not specified properly.")
+        break
+    end
 
         show_img = sum(image_ary,3)/nsum;
         show_img(boolean(mask))=0;

@@ -16,7 +16,14 @@ load([pars_dirr,name_ip,'.mat']);
 % mynr=1;
 % img=zeros(x_size,y_size);
 % for ii=1:50
-%     img=img+double(get_pe_new5(dirr{mynr}, file{mynr}, ii));
+%     if data_type==1
+%         img = img+single(get_pe_new5(dirr{mynr}, file{mynr}, ii));
+%     elseif data_type==2
+%         img = img+permute(double(read_cbf([dirr{mynr}, file{mynr}, sprintf('%05d.cbf',ii)]).data),[2 1]);
+%     else
+%         disp("Data type not specified properly.")
+%         break
+%     end
 % end
 %%
 
@@ -24,7 +31,7 @@ nr_scans=size(file,1);
 mask=cell(nr_scans,1);
 for mynr=1:nr_scans
     % loading basic mask
-    mask_temp=imread([base_dirr,'processed/reconstructions/ybco_oleh/mask_pil2M_2023/mask_pil2M.tif']);
+    mask_temp=imread([base_dirr,'mask_pil2M.tif']);
     idxneg=img==-2;
     mask_temp(idxneg)=1;
 

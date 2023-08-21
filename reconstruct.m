@@ -14,6 +14,7 @@ if ~exist(save_dirr, 'dir')
 end
 
 clear mask; load([save_dirr,'masks_700.mat']);
+% clear mask; mask=imread([base_dirr,'mask_pil2M.tif']);
 clear abs_corr; load([save_dirr,'abs_corr_700.mat']);
 
 % the following loop is made to reconstruct and save (in a temporary folder) partial
@@ -27,7 +28,7 @@ clear abs_corr; load([save_dirr,'abs_corr_700.mat']);
 for macropos=1:6
     Int_total = zeros(n_steps);
     z_total = zeros(n_steps);
-    % for nr=1:size(dirr,2)
+    % for nr=1:size(dirr,1)
     for minipos=1:4
         nr=4*(macropos-1)+minipos;
         % myab=ones(1,size(frame_nr{nr},2)); % use this if no absorption correction is needed
@@ -52,7 +53,7 @@ for macropos=1:6
     % Int_total_t(isnan(Int_total_t)) = 0;
     % saving
     file_name=[strrep(file{nr}(1:end-1),'_pos4',''),'_dinmask_part',num2str(macropos),'.mat'];
-    % save([save_dirr,file_name],'Int_total_t',...
+    % save([save_dirr,file_name],'Int_total','z_total',...
     save([save_dirr,'rec_700mm_temp/',file_name],'Int_total','z_total',...
                                                    'hmin','hmax',...
                                                    'kmin','kmax',...

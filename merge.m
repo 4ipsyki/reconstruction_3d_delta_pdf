@@ -26,14 +26,15 @@ for ii=1:size(loadnm,1)
     I_part=I_part+Int_total;
     z_part=z_part+z_total;
 end
-Int_total_t=I_part./z_part;
-Int_total_t(isnan(Int_total_t))=0;
+Int_total=I_part; z_total=z_part;
+% Int_total_t=Int_total./z_total;
+% Int_total_t(isnan(Int_total_t))=0;
 save_name = [save_dirr,'orthoiii2_700_merged_v2.mat'];
 % rescaling axes since from plotting the peaks are more aligned with the
 % grid. The sample is very twinned in h-k planes
 hmin=hmin/1.007;hmax=hmax/1.007;
 kmin=kmin*1.009;kmax=kmax*1.009;
 ub_scaled=[ub(:,1)*1.007, ub(:,2)/1.009, ub(:,3)];
-save(save_name,'Int_total_t','hmin','hmax','kmin','kmax','lmin','lmax',...
+save(save_name,'Int_total','z_total','hmin','hmax','kmin','kmax','lmin','lmax',...
     'ub','ub_scaled','-v7.3');
 

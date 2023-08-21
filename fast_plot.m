@@ -12,9 +12,9 @@ marcopos=round(nr/4)+1;
 % loading the reconstruction
 loadnm=['orthoiii2_700_merged_v2.mat'];
 save_name = [save_dirr,loadnm];
-load(save_name,'Int_total_t','hmin','hmax','kmin','kmax','lmin','lmax');
+load(save_name,'Int_total','z_total','hmin','hmax','kmin','kmax','lmin','lmax');
+Int_total_t=Int_total./z_total; Int_total_t(isnan(Int_total_t))=0;
 
-Int_total_t(isnan(Int_total_t))=0;
 n_steps=size(Int_total_t);
 qh=linspace(hmin,hmax,n_steps(1));
 qk=linspace(kmin,kmax,n_steps(2));

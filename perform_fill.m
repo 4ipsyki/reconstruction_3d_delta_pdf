@@ -15,9 +15,9 @@ mysigma  =[0.3];
 
 for idxfile=1:size(myfiles,1)
     loadnm=myfiles{idxfile};
-    load([save_dirr,loadnm],'Int_total_t','idx_paf','hmin','hmax',...
+    load([save_dirr,loadnm],'Int_total','z_total','idx_paf','hmin','hmax',...
                             'kmin','kmax','lmin','lmax','ub');
-
+    Int_total_t=Int_total./z_total; Int_total_t(isnan(Int_total_t))=0;
     data1=Int_total_t; data1(idx_paf)=nan; clear Int_total_t
     n_steps=size(data1);
     qh=linspace(hmin,hmax,n_steps(1));
@@ -46,7 +46,7 @@ for idxfile=1:size(myfiles,1)
     Int_total_t=data2;
     Int_total_t(isnan(Int_total_t))=0;
     save_name=[loadnm(1:end-4),'_filled_sg',num2str(sigma),'_kernel',num2str(max(xx(:))),'.mat'];
-    save([save_dirr,save_name],'Int_total_t','idx_paf','hmin','hmax',...
+    save([save_dirr,save_name],'Int_total_t','Int_total','z_total','idx_paf','hmin','hmax',...
                                'kmin','kmax','lmin','lmax','ub','-v7.3')
 end
 %% comparizon plotting with unfilled

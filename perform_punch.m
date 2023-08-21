@@ -11,9 +11,9 @@ load([pars_dirr,name_ip,'.mat'],'save_dirr');
 % loading the reconstruction
 loadnm='orthoiii2_700_merged_v2.mat';
 save_name = [save_dirr,loadnm];
-load(save_name,'Int_total_t','hmin','hmax','kmin','kmax','lmin','lmax','ub');
+load(save_name,'Int_total','z_total','hmin','hmax','kmin','kmax','lmin','lmax','ub');
+Int_total_t=Int_total./z_total; Int_total_t(isnan(Int_total_t))=0;
 
-Int_total_t(isnan(Int_total_t))=0;
 data1=Int_total_t; clear Int_total_t
 n_steps=size(data1);
 qh=linspace(hmin,hmax,n_steps(1));
@@ -36,7 +36,7 @@ file_name=[loadnm(1:end-4),'_punched_box',num2str(box_size),...
                            '_sg',num2str(thr_sigm),...
                            '_bragg',strrep(strrep(num2str(delta_qB),'.','p'),'         ','_'),'         ','_'),...
                            '.mat'];
-save([save_dirr,file_name],'Int_total_t','idx_paf','hmin','hmax',...
+save([save_dirr,file_name],'Int_total','z_total','idx_paf','hmin','hmax',...
                            'kmin','kmax','lmin','lmax','ub','-v7.3');
 
 %% comparison plotting with unpunched
