@@ -30,7 +30,7 @@ warning('off','MATLAB:imagesci:rtifc:missingPhotometricTag')
 
 frame_nr=frame_nr(:)';
 %Loop through all images
-for idx=1:size(frame_nr,1)
+for idx=1:size(frame_nr,2)
     disp(frame_nr(idx))
     
     if data_type==1

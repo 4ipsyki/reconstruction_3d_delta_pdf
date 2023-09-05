@@ -33,7 +33,7 @@ catch
     for nb=1:niter
         image_ary=zeros(x_size,y_size,nsum);
         filenumber=frames((1:nsum)+nsum*(nb-1));
-        parfor n=1:length(filenumber)
+        for n=1:length(filenumber)
             display(filenumber(n));
             if data_type==1
                 img = single(get_pe_new5(dirrname, flname, filenumber(n)));
@@ -45,15 +45,6 @@ catch
             end
             image_ary(:,:,n) = img;
         end
-        
-        if data_type==1
-        image = double(get_pe_new5(dirr, file, frame_nr(idx)));
-    elseif data_type==2
-        image = permute(double(read_cbf([dirr, file, sprintf('%05d.cbf',frame_nr(idx))]).data),[2 1]);
-    else
-        disp("Data type not specified properly.")
-        break
-    end
 
         show_img = sum(image_ary,3)/nsum;
         show_img(boolean(mask))=0;
@@ -137,34 +128,42 @@ if additionalshift
     list_length((1:ll/2)+ll*(shift-1),:)=[dist(1:ll/2),diff_coord(1:ll/2,:)];
 end
 
-% plot histogram of distances
-% show chosen lattice parameters in red, green and blue
+% % plot histogram of distances
+% % show chosen lattice parameters in red, green and blue
 myhist=histogram(list_length(:,1),0:0.001:1);
-hh=1; % a*-axis peak in r.l.u.
-kk=1; % b*-axis peak in r.l.u.
-ll=1; % c*-axis peak in r.l.u.
-% it's better to choose the lowest-deltaQ peaks possible.
-% note that even if the (1,0,0) peak is not allowed, in the differential map
-% this peak is usually present.\
+
+% FOR orthogonal lattices
+% hh=1; d_h00=lattice(1)/hh; % a*-axis peak in r.l.u.
+% kk=1; d_0k0=lattice(2)/kk; % b*-axis peak in r.l.u.
+% ll=1; d_00l=lattice(3)/ll; % c*-axis peak in r.l.u.
+% % it's better to choose the lowest-deltaQ peaks possible.
+% % note that even if the (1,0,0) peak is not allowed, in the differential map
+% % this peak is usually present.
+
+% FOR HEXAGONAL
+% d_hkl=a/(sqrt(4/3*(h^2+k^2+hk)+a^2/c^2*l^2));
+hh=1; d_h00=lattice(1)*sqrt(3)/2/hh;
+kk=1; d_0k0=lattice(2)*sqrt(3)/2/kk;
+ll=1; d_00l=lattice(3)/ll;
 
 % range for the peak selection
 delta=0.06;
 hold on
 mymax=max(myhist.Values);
-plot( [(hh/lattice(1))*(1-delta),(hh/(lattice(1)))*(1-delta)],[0 mymax],'red')
-plot( [(hh/lattice(1))*(1+delta),(hh/(lattice(1)))*(1+delta)],[0 mymax],'red')
-plot( [(kk/lattice(2))*(1-delta),(kk/lattice(2))*(1-delta)],[0 mymax],'green')
-plot( [(kk/lattice(2))*(1+delta),(kk/lattice(2))*(1+delta)],[0 mymax],'green')
-plot( [(ll/lattice(3))*(1-delta),(ll/lattice(3))*(1-delta)],[0 mymax],'blue')
-plot( [(ll/lattice(3))*(1+delta),(ll/lattice(3))*(1+delta)],[0 mymax],'blue')
+plot( [(1/d_h00)*(1-delta),(1/d_h00)*(1-delta)],[0 mymax],'red')
+plot( [(1/d_h00)*(1+delta),(1/d_h00)*(1+delta)],[0 mymax],'red')
+plot( [(1/d_0k0)*(1-delta),(1/d_0k0)*(1-delta)],[0 mymax],'green')
+plot( [(1/d_0k0)*(1+delta),(1/d_0k0)*(1+delta)],[0 mymax],'green')
+plot( [(1/d_00l)*(1-delta),(1/d_00l)*(1-delta)],[0 mymax],'blue')
+plot( [(1/d_00l)*(1+delta),(1/d_00l)*(1+delta)],[0 mymax],'blue')
 hold off
 xlim([0 1])
 
 %% plot of chosen-Q-range peaks
 % show position of chosen peaks in deltaQ-space
-test_a=list_length((list_length(:,1)>(hh/lattice(1))*(1-delta) & list_length(:,1)<(hh/lattice(1))*(1+delta)),:,:,:);
-test_b=list_length((list_length(:,1)>(kk/lattice(2))*(1-delta) & list_length(:,1)<(kk/lattice(2))*(1+delta)),:,:,:);
-test_c=list_length((list_length(:,1)>(ll/lattice(3))*(1-delta) & list_length(:,1)<(ll/lattice(3))*(1+delta)),:,:,:);
+test_a=list_length((list_length(:,1)>(1/d_h00)*(1-delta) & list_length(:,1)<(1/d_h00)*(1+delta)),:,:,:);
+test_b=list_length((list_length(:,1)>(1/d_0k0)*(1-delta) & list_length(:,1)<(1/d_0k0)*(1+delta)),:,:,:);
+test_c=list_length((list_length(:,1)>(1/d_00l)*(1-delta) & list_length(:,1)<(1/d_00l)*(1+delta)),:,:,:);
 
 
 clf, hold on
@@ -275,6 +274,7 @@ a_axis=cross(ax2,ax3)/vol;
 b_axis=cross(ax3,ax1)/vol;
 c_axis=cross(ax1,ax2)/vol;
 abc=[a_axis;b_axis;c_axis]'; % tentative ub matrix
+% NOTE: permute the abc collumns such that the axes match the order in the lattice variable
 
 % % ordering axes in size and reshaping the ub matrix accordingly
 % nra=norm(a_axis); nrb=norm(b_axis); nrc=norm(c_axis);
